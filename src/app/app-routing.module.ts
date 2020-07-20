@@ -9,9 +9,9 @@ import { HomepageComponent } from './components/homepage/homepage.component';
 
 const routes: Routes = [
   { path: '', component: HomepageComponent },
-  { path: 'sign-in', loadChildren: () => SigninComponent },
-  { path: 'sign-up', loadChildren: () => SignupComponent },
-  { path: 'forgot-password', loadChildren: () => ForgotPasswordComponent },
+  { path: 'sign-in', component: SigninComponent },
+  { path: 'sign-up', component: SignupComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent }
 ];
 

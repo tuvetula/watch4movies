@@ -22,6 +22,9 @@ export interface UserFirestoreModel {
   name: string;
   firstName: string;
   email: string;
+  displayName: string;
+  photoURL: string;
+  emailVerified: boolean,
   isAdmin: boolean;
   createdAt: number;
   updatedAt: number;

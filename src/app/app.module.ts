@@ -26,9 +26,9 @@ import { AngularFireModule } from '@angular/fire';
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
-    AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
     StoreModule.forRoot(reducersMap),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({

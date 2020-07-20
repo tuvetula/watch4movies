@@ -6,7 +6,7 @@ import { firebaseApiKey } from 'src/app/keys/firebase.keys';
 
 export const environment = {
   production: false,
-  firebase: {
+  firebaseConfig: {
       apiKey: firebaseApiKey,
       authDomain: "watch-4-movies.firebaseapp.com",
       databaseURL: "https://watch-4-movies.firebaseio.com",
