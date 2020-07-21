@@ -1,8 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #141414;
+  color: #ffffff;
+}
 
 .h100 {
-    height: 100%;
+  height: 100%;
 }
+
+/* Fonts */
+@font-face {
+  font-family: ranchers;
+  src: url(assets/Fonts/Ranchers-Regular.ttf);
+}
+
+/* Formulaires */
+/* form.submitted input.ng-invalid,
+input.ng-dirty.ng-invalid {
+  border: 1px solid #d9534f;
+}
+input.ng-valid.ng-dirty {
+  border: 1px solid #5cb85c;
+} */

@@ -1,0 +1,64 @@
+mat-toolbar {
+  background-color: transparent;
+  position: relative;
+  color: #ffffff;
+  padding: 0 4%;
+  top: 0px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+mat-toolbar.fadeIn {
+  background-color: #141414;
+  position: fixed;
+}
+mat-icon {
+    cursor: pointer;
+}
+::ng-deep  .mat-menu-panel {
+    max-width: 400px;
+    padding: 5%;
+    background: rgba(0,0,0,.75);
+    border: solid 1px gray;
+    border-radius: 0px;
+}
+#logoWatch4Movies {
+  font-family: ranchers, roboto,Helvetica, sans-serif;
+  font-size: 25px;
+  margin-right: 20px;
+  color: #e50914;
+}
+.leftSideNavigation {
+    font-size: 10px;
+}
+
+/* NAV LINK */
+.nav-link {
+  cursor: pointer;
+}
+.nav-link:focus {
+  outline: transparent;
+}
+.filler {
+  flex: 1 1 auto;
+}
+
+
+/* Searchbox */
+.searchBox{
+    padding: 5px 10px;
+    height: 34px;
+}
+#searchInput {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    width: 0px;
+    outline: none;
+    transition: width 0.3s;
+}
+.searchCloseDiv {
+    height: 24px;
+}
+

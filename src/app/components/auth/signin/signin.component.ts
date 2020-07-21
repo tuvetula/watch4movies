@@ -25,9 +25,10 @@ export class SigninComponent implements OnInit {
       password: ['',[Validators.required, Validators.minLength(8)]]
     })
   }
-  public submit(){
-    console.log('coucou signin');
-    
+  public onSubmit(){
+    console.log(this.signinForm.value);
   }
+
+ 
 
 }

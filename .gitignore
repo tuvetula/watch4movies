@@ -3,6 +3,10 @@
 #keys
 /src/app/keys
 
+#assets
+/src/assets/Fonts
+/src/assets/Pictures
+
 # compiled output
 /public
 /tmp

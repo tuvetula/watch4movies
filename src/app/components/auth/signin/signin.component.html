@@ -1,19 +1,20 @@
 <div class="h100" fxLayout="row" fxLayoutAlign="center center">
     <mat-card>
-        <mat-card-header>
+        <mat-card-header fxLayout="row" fxLayoutAlign="center center">
             <mat-card-title>Se connecter</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <form [formGroup]="signinForm" novalidate fxLayout="column" fxLayoutGap="15px" fxLayoutAlign="center center" (ngSubmit)="submit()">
+            <form [formGroup]="signinForm" novalidate fxLayout="column" fxLayoutGap="15px" fxLayoutAlign="center center" (ngSubmit)="onSubmit()">
                 <mat-form-field>
-                    <input matInput formControlName="email" type="email" placeholder="Email" #email>
-                    <mat-error *ngIf="email.invalid">{{ error}}</mat-error>
+                    <input matInput formControlName="email" type="email" placeholder="Email" required>
+                    <mat-error *ngIf="signinForm.get('email')">{{ error}}</mat-error>
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Mot de passe" #password>
+                    <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Mot de passe" #password required>
+                    <mat-hint>Minimum 8 caractères</mat-hint>
                     <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'hide password'" [attr.aria-pressed]="hidePassword">
                         <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon></button>
-                    <mat-error *ngIf="password.invalid">{{ error}</mat-error>
+                    <mat-error *ngIf="password.invalid">{{ error }}</mat-error>
                 </mat-form-field>
                 <div *ngIf="signinError$ | async; let error">{{ error }}</div>
                 <button mat-raised-button color="primary">Connexion</button>

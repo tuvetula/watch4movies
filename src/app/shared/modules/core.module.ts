@@ -1,7 +1,7 @@
 //Modules
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LayoutModule } from './layout.module';
 //Services
@@ -22,9 +22,11 @@ const COMPONENTS = [
 ];
 
 @NgModule({
-  declarations: COMPONENTS,
+  declarations: [...COMPONENTS
+  ],
   imports: [
     LayoutModule,
+    FormsModule,
     RouterModule,
     ReactiveFormsModule,
     HttpClientModule
