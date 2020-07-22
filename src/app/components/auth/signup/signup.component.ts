@@ -1,22 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FormBuilder, FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription, from } from 'rxjs';
 import { TrySignup } from 'src/app/shared/store/actions/auth.actions';
 import { FormErrorsMessagesService } from 'src/app/shared/services/errors/form-errors-messages.service';
-import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit , OnDestroy {
   public signupForm: FormGroup;
   public hidePassword: boolean = true;
 
   private signupFormSubscription: Subscription
-  public errorsForm;
+  public errorsForm: {};
   
   public signupError$: Observable<string>;
   constructor(
@@ -51,6 +50,9 @@ export class SignupComponent implements OnInit {
     if (this.signupForm) {
       this.errorsForm = this.formErrorsMessageService.getErrorObject(this.signupForm);
      }
-     console.log(this.errorsForm);
+  }
+
+  ngOnDestroy(): void {
+    this.signupFormSubscription.unsubscribe();
   }
 }
