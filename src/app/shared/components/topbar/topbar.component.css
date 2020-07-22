@@ -1,12 +1,16 @@
-mat-toolbar {
+nav {
+  height: var(--topBarSize);
   background-color: transparent;
   position: relative;
-  color: #ffffff;
-  padding: 0 4%;
   top: 0px;
   left: 0;
   right: 0;
   z-index: 2;
+}
+mat-toolbar {
+  background-color: transparent;
+  color: #ffffff;
+  padding: 0 4%;
 }
 mat-toolbar.fadeIn {
   background-color: #141414;

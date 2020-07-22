@@ -5,27 +5,17 @@ body {
   height: 100%;
 }
 body {
+  --topBarSize: 68px;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: #141414;
   color: #ffffff;
+  min-height: calc(100vh - var(--topBarSize))
 }
 
-.h100 {
-  height: 100%;
-}
 
 /* Fonts */
 @font-face {
   font-family: ranchers;
   src: url(assets/Fonts/Ranchers-Regular.ttf);
 }
-
-/* Formulaires */
-/* form.submitted input.ng-invalid,
-input.ng-dirty.ng-invalid {
-  border: 1px solid #d9534f;
-}
-input.ng-valid.ng-dirty {
-  border: 1px solid #5cb85c;
-} */

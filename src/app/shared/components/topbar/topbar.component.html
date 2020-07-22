@@ -1,73 +1,75 @@
-<mat-toolbar [class.fadeIn]="addFadeInClass">
-  <span id="logoWatch4Movies">Watch4movies</span>
-  <div mat-tab-nav-bar
-    class="leftSideNavigation"
-    fxHide
-    fxShow.gt-xs="true"
-    fxLayout="row"
-    fxLayoutAlign="center center"
-    fxLayoutGap="15px"
-  >
-    <span class="nav-link" [routerLink]="['/']" routerLinkActive="active"
-      >Accueil</span
-    >
-    <span class="nav-link">Films</span>
-    <span class="nav-link">Télévision</span>
-    <span class="nav-link">Artistes</span>
-  </div>
-  <span class="filler"></span>
-  <div
-    class="rightSideNavigation"
-    fxLayout="row"
-    fxLayoutAlign="center center"
-    fxLayoutGap="16px"
-  >
-    <div
-      #searchbox
-      class="searchBox"
+<nav fxLayout="row" fxLayoutAlign="start center">
+  <mat-toolbar [class.fadeIn]="addFadeInClass">
+    <span id="logoWatch4Movies">Watch4movies</span>
+    <div mat-tab-nav-bar
+      class="leftSideNavigation"
+      fxHide
+      fxShow.gt-xs="true"
       fxLayout="row"
       fxLayoutAlign="center center"
       fxLayoutGap="15px"
     >
-      <mat-icon (click)="onSearchBoxIconClick()">search</mat-icon>
+      <span class="nav-link" [routerLink]="['/']" routerLinkActive="active"
+        >Accueil</span
+      >
+      <span class="nav-link">Films</span>
+      <span class="nav-link">Télévision</span>
+      <span class="nav-link">Artistes</span>
+    </div>
+    <span class="filler"></span>
+    <div
+      class="rightSideNavigation"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+      fxLayoutGap="16px"
+    >
       <div
-        *ngIf="showSearchBoxInputDiv"
+        #searchbox
+        class="searchBox"
         fxLayout="row"
         fxLayoutAlign="center center"
         fxLayoutGap="15px"
       >
-        <input
-          #searchInputElement
-          id="searchInput"
-          [(ngModel)]="searchInput"
-          type="text"
-          placeholder="Titres, personnes, genres"
-        />
+        <mat-icon (click)="onSearchBoxIconClick()">search</mat-icon>
         <div
-          class="searchCloseDiv"
+          *ngIf="showSearchBoxInputDiv"
           fxLayout="row"
           fxLayoutAlign="center center"
-          fxFlex="24px"
-          (click)="onSearchBoxIconClick()"
+          fxLayoutGap="15px"
         >
-          <mat-icon
-            *ngIf="searchInput.length"
-            (click)="onSearchInputDivClose($event)"
-            >close</mat-icon
+          <input
+            #searchInputElement
+            id="searchInput"
+            [(ngModel)]="searchInput"
+            type="text"
+            placeholder="Titres, personnes, genres"
+          />
+          <div
+            class="searchCloseDiv"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            fxFlex="24px"
+            (click)="onSearchBoxIconClick()"
           >
+            <mat-icon
+              *ngIf="searchInput.length"
+              (click)="onSearchInputDivClose($event)"
+              >close</mat-icon
+            >
+          </div>
         </div>
       </div>
+      <mat-icon [matMenuTriggerFor]="menu">menu</mat-icon>
+      <mat-menu #menu="matMenu">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+          <mat-icon>login</mat-icon>
+          <span class="nav-link" [routerLink]="['/sign-in']">Se connecter</span>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+          <mat-icon>account_circle</mat-icon>
+          <span class="nav-link" [routerLink]="['/sign-up']">Créer un compte</span>
+        </div>
+      </mat-menu>
     </div>
-    <mat-icon [matMenuTriggerFor]="menu">menu</mat-icon>
-    <mat-menu #menu="matMenu">
-      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
-        <mat-icon>login</mat-icon>
-        <span class="nav-link" [routerLink]="['/sign-in']">Se connecter</span>
-      </div>
-      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
-        <mat-icon>account_circle</mat-icon>
-        <span class="nav-link" [routerLink]="['/sign-up']">Créer un compte</span>
-      </div>
-    </mat-menu>
-  </div>
-</mat-toolbar>
+  </mat-toolbar>
+</nav>
