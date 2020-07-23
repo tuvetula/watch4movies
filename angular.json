@@ -119,6 +119,10 @@
               "devServerTarget": "watch4movies:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
     }

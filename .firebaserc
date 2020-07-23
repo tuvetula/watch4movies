@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "watch-4-movies"
+  },
+  "targets": {
+    "watch-4-movies": {
+      "hosting": {
+        "watch4movies": [
+          "watch-4-movies"
+        ]
+      }
+    }
   }
 }

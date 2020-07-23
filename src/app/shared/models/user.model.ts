@@ -2,7 +2,10 @@ export interface UserSignup {
   name: string;
   firstName: string;
   email: string;
-  password: string;
+  passwords: {
+    password: string,
+    confirmPassword: string
+  };
 }
 
 export interface CredentialModel {
@@ -24,7 +27,7 @@ export interface UserFirestoreModel {
   email: string;
   displayName: string;
   photoURL: string;
-  emailVerified: boolean,
+  emailIsVerified: boolean,
   isAdmin: boolean;
   createdAt: number;
   updatedAt: number;

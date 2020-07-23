@@ -19,6 +19,7 @@ import { MyRouterStateSerializer } from './shared/store/helper/router.helper';
 import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
+import { AuthEffects } from './shared/store/effects/auth.effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,7 +31,7 @@ import { AngularFireModule } from '@angular/fire';
     AngularFirestoreModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     StoreModule.forRoot(reducersMap),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([AuthEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       name: 'ngrx photos',

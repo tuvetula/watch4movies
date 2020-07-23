@@ -8,16 +8,16 @@
                 <div class="w-100" fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="start center" fxLayoutGap="30px" fxLayoutGap.lt-sm="15px">
                     <mat-form-field ngClass.lt-sm="w-100" fxFlex="50%" >
                         <input matInput formControlName="name" type="text" placeholder="Nom" required>
-                        <mat-error *ngIf="signupForm.get('name').dirty">{{ errorsForm.name ? errorsForm.name : ''}}</mat-error>
+                        <mat-error *ngIf="signupForm.get('name').invalid && errorsForm">{{ errorsForm.name }}</mat-error>
                     </mat-form-field>
                     <mat-form-field ngClass.lt-sm="w-100" fxFlex="50%">
                         <input matInput formControlName="firstName" type="text" placeholder="Prénom" required>
-                        <mat-error *ngIf="signupForm.get('firstName').dirty">{{ errorsForm.firstName ? errorsForm.firstName : '' }}</mat-error>
+                        <mat-error *ngIf="signupForm.get('firstName').invalid && errorsForm">{{ errorsForm.firstName }}</mat-error>
                     </mat-form-field>
                 </div>
                 <mat-form-field class="w-100">
                     <input matInput formControlName="email" type="email" placeholder="Email" required>
-                    <mat-error *ngIf="signupForm.get('email').dirty">{{ errorsForm.email ? errorsForm.email : '' }}</mat-error>
+                    <mat-error *ngIf="signupForm.get('email').invalid && errorsForm">{{ errorsForm.email }}</mat-error>
                 </mat-form-field>
                 <div formGroupName="passwords" class="w-100" fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="start center" fxLayoutGap="30px" fxLayoutGap.lt-sm="15px">
                     <mat-form-field>
@@ -25,18 +25,18 @@
                         <mat-hint>Minimum 8 caractères</mat-hint>
                         <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'hide password'" [attr.aria-pressed]="hidePassword">
                             <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon></button>
-                        <mat-error *ngIf="signupForm.get('passwords').get('password').dirty">{{ errorsForm.passwords.password ? errorsForm.passwords.password : '' }}</mat-error>
+                        <mat-error *ngIf="signupForm.get('passwords').get('password').invalid && errorsForm">{{ errorsForm.passwords.password }}</mat-error>
                     </mat-form-field>
                     <mat-form-field>
-                        <input matInput formControlName="confirmPassword" [type]="hidePassword ? 'password' : 'text'" placeholder="Confirmation mot de passe" #confirmPassword required>
+                        <input matInput formControlName="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'" placeholder="Confirmation mot de passe" #confirmPassword required>
                         <mat-hint>Minimum 8 caractères</mat-hint>
-                        <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'hide password'" [attr.aria-pressed]="hidePassword">
-                            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        <button type="button" mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="'hide password'" [attr.aria-pressed]="hidePassword">
+                            <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                         </button>
-                        <mat-error *ngIf="signupForm.get('passwords').get('confirmPassword').dirty">{{ errorsForm.passwords.confirmPassword ? errorsForm.passwords.confirmPassword : '' }}</mat-error>
+                        <mat-error *ngIf="signupForm.get('passwords').get('confirmPassword').invalid && errorsForm">{{ errorsForm.passwords.confirmPassword }}</mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="signupError$ | async; let error">{{ error }}</div>
+                <div *ngIf="trySignupError$ | async; let error">{{ error }}</div>
                 <button class="mt-15" mat-raised-button color="warn">Connexion</button>
             </form>
         </mat-card-content>

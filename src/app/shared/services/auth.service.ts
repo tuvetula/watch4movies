@@ -1,9 +1,12 @@
 import { Injectable, NgZone } from '@angular/core';
-import { UserFireAuth, UserFirestoreModel } from '../models/user.model';
-import { AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
+import { UserFirestoreModel, UserSignup } from '../models/user.model';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { auth } from 'firebase';
+import { from, Observable, of } from 'rxjs';
+import { switchMap, exhaustMap, map } from 'rxjs/operators';
+import { StringFunctionsService } from './utilities/string/string-functions.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,13 +16,14 @@ export class AuthService {
 
   constructor(
     public firestoreService: AngularFirestore, // Inject Firestore service
-    public authenticationService: AngularFireAuth, // Inject Firebase auth service
+    public firebaseAuthService: AngularFireAuth, // Inject Firebase auth service
     public router: Router,
-    public ngZone: NgZone // NgZone service to remove outside scope warning
+    public ngZone: NgZone, // NgZone service to remove outside scope warning,
+    private stringFunctionsService: StringFunctionsService
   ) {
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
-    this.authenticationService.authState.subscribe((user) => {
+    this.firebaseAuthService.authState.subscribe((user) => {
       if (user) {
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
@@ -32,43 +36,42 @@ export class AuthService {
   }
 
   // Sign in with email/password
-  SignIn(email: string, password: string) {
-    return this.authenticationService.signInWithEmailAndPassword(email, password)
+  public SignIn(email: string, password: string) {
+    return this.firebaseAuthService.signInWithEmailAndPassword(email, password);
   }
 
   // Sign up with email/password
-  public async SignUp(email: string, password: string , name: string , firstName: string) {
-    try {
-      const result = await this.authenticationService
-        .createUserWithEmailAndPassword(email, password);
-      /* Call the SendVerificaitonMail() function when new user sign
-      up and returns promise */
-      this.SendVerificationMail();
-      this.SetUserData(result.user, name, firstName);
-    }
-    catch (error) {
-      window.alert(error.message);
-    }
-  }
-
-  // Send email verfificaiton when new user sign up
-  SendVerificationMail() {
-    return this.authenticationService.currentUser.then((user: firebase.User) => {
-      user.sendEmailVerification()
-      .then(() => {
-        this.router.navigate(['verify-email-address']);
-      });
-    })
+  public SignUp(user: UserSignup) {
+    return from(
+      this.firebaseAuthService.createUserWithEmailAndPassword(
+        user.email.toLocaleLowerCase(),
+        user.passwords.password
+      )
+    ).pipe(
+      exhaustMap((credentials: auth.UserCredential) => {
+        return from(
+          credentials.user.updateProfile({
+            displayName:
+              this.stringFunctionsService.capitalizeFirstLetter(user.name) +
+              ' ' +
+              this.stringFunctionsService.capitalizeFirstLetter(user.firstName),
+          })
+        ).pipe(map(() => credentials));
+      }),
+      exhaustMap((credentials: auth.UserCredential) => {
+        return from(credentials.user.sendEmailVerification());
+      })
+    );
   }
 
   // Reset Forggot password
-  async ForgotPassword(passwordResetEmail : string) {
+  async ForgotPassword(passwordResetEmail: string) {
     try {
-      await this.authenticationService
-        .sendPasswordResetEmail(passwordResetEmail);
-      window.alert('Vous allez recevoir un mail pour réinitialiser votre mot de passe.');
-    }
-    catch (error) {
+      await this.firebaseAuthService.sendPasswordResetEmail(passwordResetEmail);
+      window.alert(
+        'Vous allez recevoir un mail pour réinitialiser votre mot de passe.'
+      );
+    } catch (error) {
       window.alert(error);
     }
   }
@@ -86,13 +89,13 @@ export class AuthService {
 
   // Auth logic to run auth providers
   AuthLogin(provider) {
-    return this.authenticationService
+    return this.firebaseAuthService
       .signInWithPopup(provider)
       .then((result) => {
         this.ngZone.run(() => {
           this.router.navigate(['dashboard']);
         });
-        this.SetUserData(result.user);
+        this.SetUserFirestore(result.user);
       })
       .catch((error) => {
         window.alert(error);
@@ -102,32 +105,29 @@ export class AuthService {
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  SetUserData(user: UserFireAuth , name: string = null , firstName: string = null) {
-    const userRef: AngularFirestoreDocument<any> = this.firestoreService.doc(
-      `users/${user.uid}`
-    );
+  public SetUserFirestore(user: firebase.User): Observable<void> {
     const userData: UserFirestoreModel = {
       uid: user.uid,
-      name: name,
-      firstName: firstName,
+      name: user.displayName.split(' ')[0],
+      firstName: user.displayName.split(' ')[1],
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
-      emailVerified: user.emailVerified,
+      emailIsVerified: user.emailVerified,
       isAdmin: false,
       createdAt: Date.now(),
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     };
-    return userRef.set(userData, {
-      merge: true,
-    });
+    return from(
+      this.firestoreService
+        .collection('users')
+        .doc(user.uid)
+        .set(userData, { merge: true })
+    );
   }
 
   // Sign out
-  SignOut() {
-    return this.authenticationService.signOut().then(() => {
-      localStorage.removeItem('user');
-      this.router.navigate(['sign-in']);
-    });
+  public signOut(): Observable<void> {
+    return from(this.firebaseAuthService.signOut());
   }
 }

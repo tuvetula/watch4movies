@@ -6,32 +6,39 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 })
 export class FormErrorsMessagesService {
   private defaultErrors = {
-    required: () => `Ce champ est requis.`,
-    email: () => `Veuillez entrer une adresse mail valide`,
+    required: () => 'Ce champ est requis.',
+    email: () => `Veuillez entrer une adresse mail valide.`,
+    pattern: ({actualValue,requiredPattern}) => {
+      if(requiredPattern === "/^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$/"){
+        return 'Veuillez entrer une adresse mail valide.';
+      } else {
+        return 'Erreur';
+      }
+    },
     minlength: ({ requiredLength, actualLength }) =>
       `Ce champ doit comporter au moins ${requiredLength} caractères.`,
+    maxlength: ({ requiredLength, actualLength }) =>
+      `Ce champ doit comporter ${requiredLength} caractères maximum.`,
+    mustMatch: () => 'Les 2 mots de passe ne sont pas identiques',
   };
 
   constructor() {}
 
-  private getErrorMessage(control: AbstractControl): string {
-    const firstKey = Object.keys(control.errors)[0];
-    const getError = this.defaultErrors[firstKey];
-    return getError(control.errors[firstKey]);
+  public getErrorObject(form: FormGroup): any {
+    const errorsForm = this.getFormControlFirstErrorMessage(form.controls);
+    return errorsForm;
   }
 
-  private checkFormGroupPropertyContainFormGroup(controls: {
+  private getFormControlFirstErrorMessage(controls: {
     [key: string]: AbstractControl;
-  }): string | {} {
+  }): {} {
     const obj = {};
     for (const key in controls) {
-      if (controls[key] instanceof FormGroup) {
-        obj[key] = this.checkFormGroupPropertyContainFormGroup(
-          controls[key]['controls']
-        );
+      const ctrl = controls[key];
+      if (ctrl instanceof FormGroup) {
+        obj[key] = this.getFormControlFirstErrorMessage(ctrl['controls']);
       } else {
-        const ctrl = controls[key];
-        if (ctrl && ctrl.dirty && ctrl.invalid) {
+        if (ctrl && ctrl.invalid) {
           const messages = this.getErrorMessage(ctrl);
           obj[key] = messages;
         } else {
@@ -41,10 +48,14 @@ export class FormErrorsMessagesService {
     }
     return obj;
   }
-  public getErrorObject(form: FormGroup): any {
-    const errorsForm = this.checkFormGroupPropertyContainFormGroup(
-      form.controls
-    );
-    return errorsForm;
+
+  private getErrorMessage(control: AbstractControl): string {
+    const firstKey = Object.keys(control.errors)[0];
+    const getError = this.defaultErrors[firstKey];
+    if (getError) {
+      return getError(control.errors[firstKey]);
+    } else {
+      return 'Erreur';
+    }
   }
 }

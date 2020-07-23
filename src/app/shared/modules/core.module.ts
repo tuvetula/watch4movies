@@ -12,6 +12,7 @@ import { HomepageComponent } from 'src/app/components/homepage/homepage.componen
 import { SignupComponent } from 'src/app/components/auth/signup/signup.component';
 import { SigninComponent } from 'src/app/components/auth/signin/signin.component';
 import { TopbarComponent } from '../components/topbar/topbar.component';
+import { StringFunctionsService } from '../services/utilities/string/string-functions.service';
 
 const COMPONENTS = [
   PageNotFound404Component,
@@ -33,7 +34,8 @@ const COMPONENTS = [
   ],
   exports: COMPONENTS,
   providers:[
-    AuthService
+    AuthService,
+    StringFunctionsService
   ]
 })
 export class CoreModule { }
