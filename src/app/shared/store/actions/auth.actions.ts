@@ -3,6 +3,7 @@ import {
   UserSignup,
   CredentialModel,
   UserFirestoreModel,
+  UserFireAuth,
 } from '../../models/user.model';
 import { FirebaseErrorModel } from '../../models/firebase.models';
 
@@ -19,20 +20,24 @@ export const TRY_SEND_VERIFICATION_EMAIL = '[ user ] try send verification email
 export const SEND_VERIFICATION_EMAIL_SUCCESS = '[ user ] send verification email success';
 export const SEND_VERIFICATION_EMAIL_ERROR = '[ user ] send verification email error';
 
+export const TRY_SIGNOUT_AFTER_SIGNUP = '[ user ] try signout after signup';
 export const TRY_SIGNOUT = '[ user ] try signout';
+export const SIGNOUT_AFTER_SIGNUP_SUCCESS = '[ user ] signout after signup success';
 export const SIGNOUT_SUCCESS = '[ user ] signout success';
 export const SIGNOUT_ERROR = '[ user ] signout error';
 
-export const TRY_SET_USER_FIRESTORE = '[ user ] try set user firestore';
 export const TRY_SIGNIN = '[ user ] try signin';
 export const SIGNIN_SUCCESS = '[ user ] signin success';
 export const SIGNIN_ERROR = '[ user ] signin error';
-export const SIGNIN_RESET_ERROR_SUCCESS = '[ user ] signin reset error success';
+export const SIGNIN_WITH_EMAIL_NON_VERIFIED = '[ user ] signin with email non verified';
 
+export const TRY_FETCH_FIRESTORE_CURRENT_USER = '[ user ] try fetch firestore current user';
+export const FETCH_FIRESTORE_CURRENT_USER_SUCCESS = '[ user ] fetch firestore current user success';
+export const FETCH_FIRESTORE_CURRENT_USER_ERROR = '[ user ] fetch firestore user error';
 
-
-export const TRY_FETCH_CURRENT_USER = '[ user ] try fetch current user';
-export const SET_CURRENT_USER = '[ user ] set current user';
+export const TRY_SET_FIRESTORE_CURRENT_USER = '[ user ] try set firestore current user';
+export const SET_FIRESTORE_CURRENT_USER_SUCCESS = '[ user ] set firestore current user success';
+export const SET_FIRESTORE_CURRENT_USER_ERROR = '[ user ] set firestore current user error';
 
 export class TrySignup implements Action {
   readonly type = TRY_SIGNUP;
@@ -41,8 +46,7 @@ export class TrySignup implements Action {
 export class SignupSuccess implements Action {
   readonly type = SIGNUP_SUCCESS;
   constructor(
-    public payload: string
-    ) {}
+    public payload: UserFireAuth) {}
 }
 export class SignupError implements Action {
   readonly type = SIGNUP_ERROR;
@@ -58,7 +62,7 @@ export class UpdateAuthProfileSignupSuccess implements Action {
 export class UpdateAuthProfileSuccess implements Action {
   readonly type = UPDATE_AUTH_PROFILE_SUCCESS;
 }
-export class UpdateAuthProfilError implements Action {
+export class UpdateAuthProfileError implements Action {
   readonly type = UPDATE_AUTH_PROFILE_ERROR;
   constructor(public payload: FirebaseErrorModel) {}
 }
@@ -75,21 +79,27 @@ export class SendVerificationEmailError implements Action {
   constructor(public payload: FirebaseErrorModel){}
 }
 
+export class TrySignoutAfterSignup implements Action {
+  readonly type = TRY_SIGNOUT_AFTER_SIGNUP;
+}
 export class TrySignout implements Action {
   readonly type = TRY_SIGNOUT;
 }
+export class SignoutAfterSignupSuccess implements Action {
+  readonly type = SIGNOUT_AFTER_SIGNUP_SUCCESS;
+}
 export class SignoutSuccess implements Action {
   readonly type = SIGNOUT_SUCCESS;
+  constructor(public payload: string){}
 }
 export class SignoutError implements Action {
   readonly type = SIGNOUT_ERROR;
   constructor(public payload: FirebaseErrorModel){}
 }
 
-
-export class trySetUserFirestore implements Action {
-  readonly type = TRY_SET_USER_FIRESTORE
-}
+//-------------------------------------------------
+//----------------------SIGNIN---------------------
+//-------------------------------------------------
 
 export class TrySignin implements Action {
   readonly type = TRY_SIGNIN;
@@ -97,23 +107,39 @@ export class TrySignin implements Action {
 }
 export class SigninSuccess implements Action {
   readonly type = SIGNIN_SUCCESS;
-  constructor(public payload: string) {}
+  constructor(public payload:{
+    user: UserFireAuth,
+    success: string
+  }) {}
 }
 export class SigninError implements Action {
   readonly type = SIGNIN_ERROR;
-  constructor(public payload: any) {}
+  constructor(public payload: FirebaseErrorModel) {}
 }
-export class SigninResetErrorSuccess implements Action {
-  readonly type = SIGNIN_RESET_ERROR_SUCCESS;
+export class SigninWithEmailNonVerified implements Action {
+  readonly type = SIGNIN_WITH_EMAIL_NON_VERIFIED;
+  constructor(public payload: FirebaseErrorModel){}
 }
 
-
-
-export class TryFetchCurrentUser implements Action {
-  readonly type = TRY_FETCH_CURRENT_USER;
+export class TryFetchFirestoreCurrentUser implements Action {
+  readonly type = TRY_FETCH_FIRESTORE_CURRENT_USER;
 }
-export class SetCurrentUser implements Action {
-  readonly type = SET_CURRENT_USER;
+export class FetchFirestoreCurrentUserSuccess implements Action {
+  readonly type = FETCH_FIRESTORE_CURRENT_USER_SUCCESS;
+  constructor(public payload: UserFirestoreModel){}
+}
+export class FetchFirestoreCurrentUserError implements Action {
+  readonly type = FETCH_FIRESTORE_CURRENT_USER_ERROR;
+}
+
+export class TrySetFirestoreCurrentUser implements Action {
+  readonly type = TRY_SET_FIRESTORE_CURRENT_USER;
+}
+export class SetFirestoreCurrentUserSuccess implements Action {
+  readonly type = SET_FIRESTORE_CURRENT_USER_SUCCESS;
+}
+export class SetFirestoreCurrentUserError implements Action {
+  readonly type = SET_FIRESTORE_CURRENT_USER_ERROR;
   constructor(public payload: UserFirestoreModel) {}
 }
 
@@ -122,18 +148,23 @@ export type AuthActions =
   | SignupSuccess
   | SignupError
   | TryUpdateAuthProfile
-  | UpdateAuthProfileSignupSuccess
   | UpdateAuthProfileSuccess
-  | UpdateAuthProfilError
+  | UpdateAuthProfileError
   | TrySendVerificationEmail
   | SendVerificationEmailSuccess
   | SendVerificationEmailError
   | TrySignout
+  | TrySignoutAfterSignup
+  | SignoutAfterSignupSuccess
   | SignoutSuccess
   | SignoutError
   | TrySignin
   | SigninSuccess
   | SigninError
-  | SigninResetErrorSuccess
-  | TryFetchCurrentUser
-  | SetCurrentUser;
+  | SigninWithEmailNonVerified
+  | TryFetchFirestoreCurrentUser
+  | FetchFirestoreCurrentUserSuccess
+  | FetchFirestoreCurrentUserError
+  | TrySetFirestoreCurrentUser
+  | SetFirestoreCurrentUserSuccess
+  | SetFirestoreCurrentUserError;

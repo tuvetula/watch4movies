@@ -12,3 +12,23 @@ export const authUserSelector = createSelector(
     }
   }
 );
+export const authSuccessSelector = createSelector(
+  authSelector,
+  (authState: AuthState) => {
+    if (authState) {
+      return authState.success;
+    } else {
+      return null;
+    }
+  }
+);
+export const authErrorSelector = createSelector(
+  authSelector,
+  (authState: AuthState) => {
+    if (authState) {
+      return authState.error;
+    } else {
+      return null;
+    }
+  }
+);

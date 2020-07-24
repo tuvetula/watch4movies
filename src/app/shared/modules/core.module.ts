@@ -32,7 +32,7 @@ const COMPONENTS = [
     ReactiveFormsModule,
     HttpClientModule
   ],
-  exports: COMPONENTS,
+  exports: [...COMPONENTS,LayoutModule],
   providers:[
     AuthService,
     StringFunctionsService

@@ -1,12 +1,12 @@
 import { Injectable, NgZone } from '@angular/core';
-import { UserFirestoreModel, UserSignup } from '../models/user.model';
+import { UserFirestoreModel, UserSignup, UserFireAuth } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { auth } from 'firebase';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, of, BehaviorSubject } from 'rxjs';
 import { switchMap, exhaustMap, map } from 'rxjs/operators';
-import { StringFunctionsService } from './utilities/string/string-functions.service';
+import * as firebase from 'firebase';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,6 @@ export class AuthService {
     public firebaseAuthService: AngularFireAuth, // Inject Firebase auth service
     public router: Router,
     public ngZone: NgZone, // NgZone service to remove outside scope warning,
-    private stringFunctionsService: StringFunctionsService
   ) {
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
@@ -42,28 +41,25 @@ export class AuthService {
 
   // Sign up with email/password
   public SignUp(user: UserSignup) {
-    return from(
-      this.firebaseAuthService.createUserWithEmailAndPassword(
-        user.email.toLocaleLowerCase(),
+    return this.firebaseAuthService.createUserWithEmailAndPassword(
+        user.email,
         user.passwords.password
       )
-    ).pipe(
-      exhaustMap((credentials: auth.UserCredential) => {
-        return from(
-          credentials.user.updateProfile({
-            displayName:
-              this.stringFunctionsService.capitalizeFirstLetter(user.name) +
-              ' ' +
-              this.stringFunctionsService.capitalizeFirstLetter(user.firstName),
-          })
-        ).pipe(map(() => credentials));
-      }),
-      exhaustMap((credentials: auth.UserCredential) => {
-        return from(credentials.user.sendEmailVerification());
-      })
-    );
   }
-
+  //update auth profile
+  public updateAuthProfile(userStore: UserFireAuth) {
+    const displayName = userStore.name && userStore.firstName ? userStore.name + ' ' + userStore.firstName : '';
+    return firebase.auth().currentUser.updateProfile({
+      displayName: displayName,
+      photoURL: userStore.photoURL
+    })
+  }
+  //Send verification email
+  public SendEmailVerification(){
+    return firebase.auth().currentUser.sendEmailVerification({
+      url: "http://localhost:4200/sign-in"
+    });
+  }
   // Reset Forggot password
   async ForgotPassword(passwordResetEmail: string) {
     try {
@@ -105,25 +101,29 @@ export class AuthService {
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  public SetUserFirestore(user: firebase.User): Observable<void> {
-    const userData: UserFirestoreModel = {
-      uid: user.uid,
-      name: user.displayName.split(' ')[0],
-      firstName: user.displayName.split(' ')[1],
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      emailIsVerified: user.emailVerified,
+  public SetUserFirestore(user: UserFireAuth): Promise<void> {
+    const currentUser = firebase.auth().currentUser;
+    const currentUserData: UserFirestoreModel = {
+      uid: currentUser.uid,
+      name: currentUser.displayName.split(' ')[0],
+      firstName: currentUser.displayName.split(' ')[1],
+      email: currentUser.email,
+      displayName: currentUser.displayName,
+      photoURL: currentUser.photoURL,
+      emailVerified: currentUser.emailVerified,
       isAdmin: false,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    return from(
-      this.firestoreService
+    return this.firestoreService
         .collection('users')
-        .doc(user.uid)
-        .set(userData, { merge: true })
-    );
+        .doc(currentUserData.uid)
+        .set(currentUserData, { merge: true })
+    ;
+  }
+
+  public getCurrentUserFromFirestore(uid: string){
+    return this.firestoreService.collection('users').doc(uid).get();
   }
 
   // Sign out

@@ -1,10 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, of, empty } from 'rxjs';
 import { TrySignup } from 'src/app/shared/store/actions/auth.actions';
+import { FormResetSuccessError } from '../../../shared/store/actions/form.actions';
 import { FormErrorsMessagesService } from 'src/app/shared/services/errors/form-errors-messages.service';
 import { MustMatch } from 'src/app/shared/services/errors/password-validator';
+import { authSuccessSelector, authErrorSelector } from 'src/app/shared/store/selectors/auth.selectors';
+import { FirebaseErrorModel, getFirebaseErrorFrench } from 'src/app/shared/models/firebase.models';
+import { exhaustMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-signup',
@@ -20,6 +24,8 @@ export class SignupComponent implements OnInit , OnDestroy {
   public errorsForm: {[key: string]:any};
   
   public trySignupError$: Observable<string>;
+  public trySignupSuccess$: Observable<string>;
+
   constructor(
     private store: Store,
     private fb: FormBuilder,
@@ -38,9 +44,23 @@ export class SignupComponent implements OnInit , OnDestroy {
         validator: MustMatch('password', 'confirmPassword')
     })
     },{ updateOn: 'blur' });
+  
     this.signupFormSubscription = this.signupForm.statusChanges.subscribe(
       () => this.changeStatusForm()
     )
+    this.trySignupSuccess$ = this.store.select(authSuccessSelector);
+    this.trySignupError$ = this.store.pipe(
+      select(authErrorSelector),
+      exhaustMap((error: FirebaseErrorModel) => {
+        if (error) {
+          return of(error).pipe(
+            map((error) => getFirebaseErrorFrench(error))
+          )
+        } else {
+          return empty();
+        }
+      }),
+    );
   }
 
   public onSubmit(){    
@@ -59,5 +79,6 @@ export class SignupComponent implements OnInit , OnDestroy {
 
   ngOnDestroy(): void {
     this.signupFormSubscription.unsubscribe();
+    this.store.dispatch(new FormResetSuccessError());
   }
 }

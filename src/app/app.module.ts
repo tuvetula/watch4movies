@@ -42,7 +42,8 @@ import { AuthEffects } from './shared/store/effects/auth.effects';
     }),
     AppRoutingModule,
   ],
-  providers: [AngularFireAuth , 
+  providers: [
+    AngularFireAuth , 
     { 
       provide: RouterStateSerializer, 
       useClass: MyRouterStateSerializer
